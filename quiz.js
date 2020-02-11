@@ -1,42 +1,27 @@
-// GIVEN I am taking a code quiz
-// WHEN I click the start button
-// THEN a timer starts and I am presented with a question
-// WHEN I answer a question
-// THEN I am presented with another question
-// WHEN I answer a question incorrectly
-// THEN time is subtracted from the clock
-// WHEN all questions are answered or the timer reaches 0
-// THEN the game is over
-// WHEN the game is over
-// THEN I can save my initials and score
-// {
-//     questions:String,
-//     answers:[],
-//     answerIndex:1
-// }
 (function () {
+    document.getElementById('submit').addEventListener("click", function (e) {
+        document.getElementById("container").innerHTML = "Done!";
+        clearInterval(timer)
+    });
 
+    var timer;
     const display = document.querySelector('#realSeconds');
     function timer() {
         var totalSecond = 75;
-        setInterval(function () {
+        timer = setInterval(function () {
             totalSecond--;
             display.textContent = totalSecond;
             // if(userAnswer !== currentQuestion.correctAnswer){
             //     totalSecond -= 10;
             if (totalSecond < 0) {
                 document.getElementById("container").innerHTML = "Done!";
+                clearInterval(timer)
             }
 
         }, 1000);
 
     }
-    // window.onload = function () {
-
-
-    // }
-
-
+   
     function buildQuiz() {
 
         //variable to store the HTML output
@@ -59,8 +44,10 @@
             }
             //add this question and its answers to the output
             output.push(
-                `<div class="question">${currentQuestion.question}</div>
-                <div class="answers">${answers.join('')}</div>`
+                `<div class="slide">
+                <div class="question">${currentQuestion.question}</div>
+                <div class="answers">${answers.join("")}</div>
+                </div>`
             );
         }
         );
@@ -142,8 +129,6 @@
         }
     ];
 
-
-
     const slides = document.querySelectorAll(".slide");
     let currentSlide = 0;
     showSlide(currentSlide);
@@ -152,17 +137,3 @@
 
 
 })();
-
-
-
-
-
-
-
-
-
-
-
-
-
-
