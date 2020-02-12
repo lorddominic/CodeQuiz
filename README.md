@@ -1,1 +1,2 @@
 # CodeQuiz
+This assignment is the most challenging one so far. The hardest part is to target different elements from JavaScript to HTML. The result is still not perfect yet. I think I will work more on manipulate function, method and object. Also I need to deeply understand the concept of DOM. [Link to the website](https://lorddominic.github.io/CodeQuiz/)
