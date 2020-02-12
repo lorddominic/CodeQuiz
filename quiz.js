@@ -1,139 +1,147 @@
 (function () {
-    document.getElementById('submit').addEventListener("click", function (e) {
+
+    const display = document.querySelector('#realSeconds');
+    const quizContainer = document.getElementById('quiz');
+    const resultsContainer = document.getElementById('results');
+    const submitButton = document.getElementById('submit');
+    const startButton = document.getElementById("start");
+
+    var questionIndex = 0;
+    var timer;
+    let numCorrect = 0;
+
+    const questions = [
+        {
+            question: "Who invented javaScript?",
+            answers: [
+                "Bill Gates",
+                "Steve Jobs",
+                "Brendan Eich"
+            ],
+            correctAnswer: "Brendan Eich"
+        },
+        {
+            question: "Which one is not a front end language?",
+            answers: [
+                "JavaScript",
+                "HTML",
+                "Java",
+                "CSS"
+            ],
+            correctAnswer: "Java"
+        },
+        {
+            question: "Which tool can you use to ensure code quality?",
+            answers: [
+                "Angular",
+                "jQuery",
+                "RequireJS",
+                "ESLint"
+            ],
+            correctAnswer: "ESLint"
+        },
+        {
+            question: "Which programming language is the oldest?",
+            answers: [
+                "C++",
+                "Fortran",
+                "JavaScript",
+                "COBOL"
+            ],
+            correctAnswer: "Fortran"
+        },
+        {
+            question: "Who did not cofound Microsoft?",
+            answers: [
+                "Steve Jobs",
+                "Bill Gates",
+                "Paul Allen"
+            ],
+            correctAnswer: "Steve Jobs"
+        }
+    ];
+    submitButton.addEventListener("click", function (e) {
         document.getElementById("container").innerHTML = "Done!";
         clearInterval(timer)
+
     });
 
-    var timer;
-    const display = document.querySelector('#realSeconds');
+    var answers = document.querySelector("#answers");
+    answers.addEventListener("click", function (e) {
+        if (!e.target.matches("button")) return;
+        var answer = e.target.textContent
+        console.log(answer);
+
+        checkAnswer(answer);
+
+
+
+    });
+
+    function checkAnswer(answer) {
+        if (answer === questions[questionIndex].correctAnswer) {
+
+            numCorrect++
+            questionIndex++
+
+            buildQuiz();
+
+        } else {
+            questionIndex++
+
+            buildQuiz();
+        }
+    }
+
     function timer() {
         var totalSecond = 75;
         timer = setInterval(function () {
             totalSecond--;
             display.textContent = totalSecond;
-            // if(userAnswer !== currentQuestion.correctAnswer){
-            //     totalSecond -= 10;
+
             if (totalSecond < 0) {
                 document.getElementById("container").innerHTML = "Done!";
                 clearInterval(timer)
+                showResults();
             }
 
         }, 1000);
 
     }
-   
+
     function buildQuiz() {
+        if (questionIndex >= questions.length) {
 
-        //variable to store the HTML output
-        const output = [];
+            showResults();
+        } else {
+            //variable to store the HTML output
+            const output = [];
+            const currentQuestion = questions[questionIndex];
 
-        //for rach question
-        questions.forEach((currentQuestion, questionNumber) => {
-            //variable to store  the list of possible answers
-            const answers = [];
+            answers.innerHTML = "";
+            document.getElementById("question").textContent = currentQuestion.question;
 
-            //and for each available answer
-            for (letter in currentQuestion.answers) {
-                answers.push(
-                    `<label>
-                    <input type = "radio" name = "question${questionNumber}" value="${letter}" >
-                    ${letter} :
-                     ${currentQuestion.answers[letter]}
-                        </label>`
-                );
-            }
-            //add this question and its answers to the output
-            output.push(
-                `<div class="slide">
-                <div class="question">${currentQuestion.question}</div>
-                <div class="answers">${answers.join("")}</div>
-                </div>`
-            );
+            currentQuestion.answers.forEach(function (answer) {
+                var btn = document.createElement("button");
+                btn.textContent = answer;
+
+                document.getElementById("answers").append(btn);
+            })
         }
-        );
-        quizContainer.innerHTML = output.join('');
-        timer();
     }
     function showResults() {
-        //gather answer containers from the quiz
-        const answerContainers = quizContainer.querySelectorAll('.answers');
-        let numCorrect = 0;
-        questions.forEach((currentQuestion, questionNumber) => {
-            const answerContainer = answerContainers[questionNumber];
-            const selector = `input[name=question${questionNumber}]:checked`;
-            const userAnswer = (answerContainer.querySelector(selector) || {}).value;
+        clearInterval(timer);
 
-            if (userAnswer === currentQuestion.correctAnswer) {
-                numCorrect++;
-            }
-        });
+
+        document.getElementById("question").innerText = "";
+        document.getElementById("answers").innerHTML = "";
+
         resultsContainer.innerHTML = `${numCorrect} out of ${questions.length}`;
     }
 
-    function showSlide(n) {
-
-    }
-
-    const quizContainer = document.getElementById('quiz');
-    const resultsContainer = document.getElementById('results');
-    const submitButton = document.getElementById('submit');
-    const startButton = document.getElementById("start");
-    const questions = [
-        {
-            question: "Who invented javaScript?",
-            answers: {
-                a: "Bill Gates",
-                b: "Steve Jobs",
-                c: "Brendan Eich"
-            },
-            correctAnswer: "c"
-        },
-        {
-            question: "Which one is not a front end language?",
-            answers: {
-                a: "JavaScript",
-                b: "HTML",
-                c: "Java",
-                d: "CSS"
-            },
-            correctAnswer: "c"
-        },
-        {
-            question: "Which tool can you use to ensure code quality?",
-            answers: {
-                a: "Angular",
-                b: "jQuery",
-                c: "RequireJS",
-                d: "ESLint"
-            },
-            correctAnswer: "d"
-        },
-        {
-            question: "Which programming language is the oldest?",
-            answers: {
-                a: "C++",
-                b: "Fortran",
-                c: "JavaScript",
-                d: "COBOL"
-            },
-            correctAnswer: "b"
-        },
-        {
-            question: "Who did not cofound Microsoft?",
-            answers: {
-                a: "Steve Jobs",
-                b: "Bill Gates",
-                c: "Paul Allen"
-            },
-            correctAnswer: "a"
-        }
-    ];
-
-    const slides = document.querySelectorAll(".slide");
-    let currentSlide = 0;
-    showSlide(currentSlide);
-    startButton.addEventListener('click', buildQuiz);
+    startButton.addEventListener('click', function () {
+        timer();
+        buildQuiz();
+    });
     submitButton.addEventListener('click', showResults);
-
-
 })();
